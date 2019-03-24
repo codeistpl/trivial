@@ -26,178 +26,173 @@ SOFTWARE.
 
 /*!
  * \addtogroup trivial
- * This is a set of trivialized implementations of common elementals availiable in c11 and later.
- * Before using this, please consider using c++ standard that already implemented this, or use other 3rd party widely used library that implemented this (for example boost)
+ * This is a set of trivialized implementations of common elementals availiable
+ * in c11 and later. Before using this, please consider using c++ standard that
+ * already implemented this, or use other 3rd party widely used library that
+ * implemented this (for example boost)
  */
-namespace trivial{
+namespace trivial {
 
 /*!
  * \brief The bad_optional_access exception
  */
 class bad_optional_access : public std::logic_error {
 public:
-    bad_optional_access() : std::logic_error("accesing optional with no value"){};
+  bad_optional_access() : std::logic_error("accesing optional with no value"){};
 };
-
 
 /*!
  * \brief The optional class is a trivialized implementaion of std::optional
  */
-template<typename T>
-class optional{
+template <typename T> class optional {
 public:
-    optional() = default;
-    optional(T v){
-        mValue = v;
-        opt=true;
+  optional() = default;
+  optional(T v) {
+    mValue = v;
+    opt = true;
+  }
+
+  constexpr optional<T> &operator=(const T &rhs) {
+    mValue = rhs;
+    opt = rhs;
+    return *this;
+  }
+
+  constexpr T &operator*() & {
+    if (!opt) {
+      throw bad_optional_access();
     }
 
-    constexpr optional<T>& operator = (const T &rhs){
-        mValue = rhs;
-        opt = rhs;
-        return *this;
+    return mValue;
+  }
+
+  constexpr const T &operator*() const & {
+    if (!opt) {
+      throw bad_optional_access();
     }
+    return mValue;
+  }
 
-    constexpr T& operator * () & {
-        if (!opt){
-            throw bad_optional_access();
-        }
-
-        return mValue;
+  constexpr T *operator->() {
+    if (!opt) {
+      throw bad_optional_access();
     }
+    return &mValue;
+  }
 
-    constexpr const T& operator * () const & {
-        if (!opt){
-            throw bad_optional_access();
-        }
-        return mValue;
+  constexpr const T *operator->() const {
+    if (!opt) {
+      throw bad_optional_access();
     }
+    return &mValue;
+  }
 
-    constexpr T* operator -> () {
-        if (!opt){
-            throw bad_optional_access();
-        }
-        return &mValue;
+  inline const T &value() const {
+    if (!opt) {
+      throw bad_optional_access();
     }
+    return mValue;
+  }
 
-    constexpr const T* operator -> () const {
-        if (!opt){
-            throw bad_optional_access();
-        }
-        return &mValue;
-    }
+  constexpr bool has_value() { return opt; }
 
-    inline const T& value()const{
-        if (!opt){
-            throw bad_optional_access();
-        }
-        return mValue;
-    }
+  constexpr explicit operator bool() const { return opt; }
 
-    constexpr bool has_value(){return opt;}
-
-    constexpr explicit operator bool() const{
-        return opt;
-    }
-
-    void reset(){
-        opt = false;
-    }
+  void reset() { opt = false; }
 
 private:
-    T mValue;
-    bool opt = false;
+  T mValue;
+  bool opt = false;
 };
 
-template<typename T>
-inline bool operator == (const T & lhs, const optional<T>& rhs){
-    return (lhs == rhs.value());
-}
-
-template<typename T>
-inline bool operator == ( const optional<T>&  lhs,const T &rhs){
-    return (rhs == lhs.value());
-}
-
-template<typename T>
-inline bool operator != (const T & lhs, const optional<T>& rhs){
-    return !(lhs == rhs);
-}
-
-template<typename T>
-inline bool operator != ( const optional<T>&  lhs,const T &rhs){
-    return !(rhs == lhs);
-}
-
-template<typename T>
-inline bool operator == (const optional<T> & lhs, const optional<T> &rhs) {
-    return (lhs.value() == rhs.value());
-}
-
-template<typename T>
-inline bool operator != (const optional<T> & lhs, const optional<T> &rhs) {
-    return !(lhs == rhs);
-}
-
-
-template<typename T>
-inline bool operator >= (const optional<T> & lhs, const optional<T> &rhs) {
-    return lhs.value() >= rhs.value();
-}
-
-template<typename T>
-inline bool operator >= (const optional<T> & lhs, const T &rhs) {
-    return lhs.value() >= rhs;
-}
-
-template<typename T>
-inline bool operator >= (const T & lhs, const optional<T> &rhs) {
-    return lhs >= rhs.value();
-}
-
-template<typename T>
-inline bool operator <= (const optional<T> & lhs, const optional<T> &rhs) {
-    return lhs.value() <= rhs.value();
-}
-
-template<typename T>
-inline bool operator <= (const optional<T> & lhs, const T &rhs) {
-    return lhs.value() <= rhs;
-}
-
-template<typename T>
-inline bool operator <= (const T & lhs, const optional<T> &rhs) {
-    return lhs <= rhs.value();
+template <typename T>
+inline bool operator==(const T &lhs, const optional<T> &rhs) {
+  return (lhs == rhs.value());
 }
 
 template <typename T>
-inline bool operator > (const optional<T> &rhs, const optional<T> &lhs){
-    return rhs.value() > lhs.value();
+inline bool operator==(const optional<T> &lhs, const T &rhs) {
+  return (rhs == lhs.value());
 }
 
 template <typename T>
-inline bool operator > (const optional<T> &rhs, const T &lhs){
-    return rhs.value() > lhs;
+inline bool operator!=(const T &lhs, const optional<T> &rhs) {
+  return !(lhs == rhs);
 }
 
 template <typename T>
-inline bool operator > (const T &rhs, const optional<T> &lhs){
-    return rhs > lhs.value();
+inline bool operator!=(const optional<T> &lhs, const T &rhs) {
+  return !(rhs == lhs);
 }
 
 template <typename T>
-inline bool operator < (const optional<T> &rhs, const optional<T> &lhs){
-    return rhs.value() < lhs.value();
+inline bool operator==(const optional<T> &lhs, const optional<T> &rhs) {
+  return (lhs.value() == rhs.value());
 }
 
 template <typename T>
-inline bool operator < (const T &rhs, const optional<T> &lhs){
-    return rhs < lhs.value();
+inline bool operator!=(const optional<T> &lhs, const optional<T> &rhs) {
+  return !(lhs == rhs);
 }
 
 template <typename T>
-inline bool operator < (const optional<T> &rhs, const T &lhs){
-    return rhs.value() < lhs;
+inline bool operator>=(const optional<T> &lhs, const optional<T> &rhs) {
+  return lhs.value() >= rhs.value();
 }
 
+template <typename T>
+inline bool operator>=(const optional<T> &lhs, const T &rhs) {
+  return lhs.value() >= rhs;
 }
+
+template <typename T>
+inline bool operator>=(const T &lhs, const optional<T> &rhs) {
+  return lhs >= rhs.value();
+}
+
+template <typename T>
+inline bool operator<=(const optional<T> &lhs, const optional<T> &rhs) {
+  return lhs.value() <= rhs.value();
+}
+
+template <typename T>
+inline bool operator<=(const optional<T> &lhs, const T &rhs) {
+  return lhs.value() <= rhs;
+}
+
+template <typename T>
+inline bool operator<=(const T &lhs, const optional<T> &rhs) {
+  return lhs <= rhs.value();
+}
+
+template <typename T>
+inline bool operator>(const optional<T> &rhs, const optional<T> &lhs) {
+  return rhs.value() > lhs.value();
+}
+
+template <typename T>
+inline bool operator>(const optional<T> &rhs, const T &lhs) {
+  return rhs.value() > lhs;
+}
+
+template <typename T>
+inline bool operator>(const T &rhs, const optional<T> &lhs) {
+  return rhs > lhs.value();
+}
+
+template <typename T>
+inline bool operator<(const optional<T> &rhs, const optional<T> &lhs) {
+  return rhs.value() < lhs.value();
+}
+
+template <typename T>
+inline bool operator<(const T &rhs, const optional<T> &lhs) {
+  return rhs < lhs.value();
+}
+
+template <typename T>
+inline bool operator<(const optional<T> &rhs, const T &lhs) {
+  return rhs.value() < lhs;
+}
+
+} // namespace trivial
