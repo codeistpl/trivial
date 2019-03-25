@@ -25,49 +25,90 @@ SOFTWARE.
 
 namespace trivial {
 
-template <typename T> class shared_ptr {
-public:
-  shared_ptr() {
-    mCounter = new size_t(0);
-    mPtr = NULL;
+  template <typename T> class shared_ptr {
+  public:
+    shared_ptr() {
+      mCounter = NULL;
+      mPtr = NULL;
+    };
+
+    shared_ptr(const shared_ptr<T> &rhs) {
+      mPtr = rhs.mPtr;
+      mCounter = rhs.mCounter;
+      (*mCounter)++;
+    }
+
+    shared_ptr(const T &rhs) {
+      mPtr = new T(rhs);
+      mCounter = new long(1);
+    }
+
+    shared_ptr(T *ptr) {
+      mPtr = ptr;
+      mCounter = new long(1);
+    }
+
+    ~shared_ptr() {
+      if(mCounter==NULL)
+        return;
+      (*mCounter) --;
+      if (*mCounter < 1) {
+          delete mCounter;
+          delete mPtr;
+        }
+    }
+
+    void reset(){
+      if(mCounter != NULL){
+          (*mCounter) --;
+          mCounter = NULL;
+        }
+      mPtr = NULL;
+    }
+
+    shared_ptr<T> &operator=(T *rhs) {
+      if (*mCounter <= 1) {
+          delete mCounter;
+          delete mPtr;
+        }
+
+      mPtr = rhs;
+      mCounter = new long(1);
+      return *this;
+    }
+
+    T& operator*(){
+      return *mPtr;
+    }
+
+    T* operator->(){
+      return mPtr;
+    }
+
+    T *get() { return mPtr; }
+
+    long use_count() const{
+      if (mCounter == NULL)
+        return 0;
+      return *mCounter;
+    }
+
+    explicit operator bool() const {
+      return mPtr != NULL;
+    }
+
+    void swap (shared_ptr& rhs){
+      T* tmpPtr = rhs.mPtr;
+      long* tmpCounter = rhs.mCounter;
+      rhs.mPtr = mPtr;
+      rhs.mCounter =mCounter;
+      mCounter = tmpCounter;
+      mPtr = tmpPtr;
+    }
+
+  private:
+    T *mPtr;
+    long *mCounter;
   };
-
-  shared_ptr(const shared_ptr<T> &rhs) {
-    mPtr = rhs.mPtr;
-    mCounter = rhs.mCounter;
-    *mCounter++;
-  }
-
-  shared_ptr(T *ptr) {
-    mPtr = ptr;
-    mCounter = new size_t(1);
-  }
-
-  ~shared_ptr() {
-    *mCounter--;
-    if (*mCounter <= 1) {
-      delete mCounter;
-      delete mPtr;
-      mPtr == NULL;
-    }
-  }
-
-  shared_ptr<T> &operator=(T *rhs) {
-    if (*mCounter <= 1) {
-      delete mCounter;
-      delete mPtr;
-    }
-
-    mPtr = rhs;
-    mCounter = new size_t(1);
-    return *this;
-  }
-
-  T *get() { return mPtr; }
-
-private:
-  T *mPtr;
-  size_t *mCounter;
-};
 
 } // namespace trivial
