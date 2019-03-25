@@ -46,19 +46,19 @@ public:
  */
 template <typename T> class optional {
 public:
-  optional() = default;
+  optional(){};
   optional(T v) {
     mValue = v;
     opt = true;
   }
 
-  constexpr optional<T> &operator=(const T &rhs) {
+  optional<T> &operator=(const T &rhs) {
     mValue = rhs;
     opt = rhs;
     return *this;
   }
 
-  constexpr T &operator*() & {
+  T &operator*() & {
     if (!opt) {
       throw bad_optional_access();
     }
@@ -66,21 +66,21 @@ public:
     return mValue;
   }
 
-  constexpr const T &operator*() const & {
+  const T &operator*() const & {
     if (!opt) {
       throw bad_optional_access();
     }
     return mValue;
   }
 
-  constexpr T *operator->() {
+  T *operator->() {
     if (!opt) {
       throw bad_optional_access();
     }
     return &mValue;
   }
 
-  constexpr const T *operator->() const {
+  const T *operator->() const {
     if (!opt) {
       throw bad_optional_access();
     }
@@ -94,9 +94,9 @@ public:
     return mValue;
   }
 
-  constexpr bool has_value() { return opt; }
+  bool has_value() { return opt; }
 
-  constexpr explicit operator bool() const { return opt; }
+  explicit operator bool() const { return opt; }
 
   void reset() { opt = false; }
 
