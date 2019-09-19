@@ -20,7 +20,7 @@ endif ()
 
 include_directories(${PROJECT_SOURCE_DIR} ${GTestSrc} ${GTestSrc}/include ${GMockSrc} ${GMockSrc}/include)
 
-add_executable(${PROJECT_NAME} main.cpp tst_optional.h tst_shared_pointer.h singletonmock.h ctordtormock.h
+add_executable(${PROJECT_NAME} main.cpp tst_array_copy.h tst_optional.h tst_shared_pointer.h singletonmock.h ctordtormock.h
                ${GTestSrc}/src/gtest-all.cc
                ${GMockSrc}/src/gmock-all.cc)
 
