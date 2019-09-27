@@ -20,14 +20,26 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+#pragma once
 
 #include <cstddef>
+#include <stdexcept>
 
-#pragma once
 namespace trivial {
-template <typename T> void copy_array(T *src, size_t, T *dst, size_t dst_size) {
-    for (size_t i = 0; i < dst_size; i++) {
-        dst[i] = src[i];
+
+template <typename T, size_t Size> class array {
+  private:
+    T data[Size];
+
+  public:
+    size_t size() const { return Size; }
+    T &operator[](size_t idx) { return data[idx]; }
+    T &at(size_t idx) {
+        if (idx > Size - 1) {
+            throw std::out_of_range("size exceeded");
+        }
+        return data[idx];
     }
-}
+};
+
 } // namespace trivial
