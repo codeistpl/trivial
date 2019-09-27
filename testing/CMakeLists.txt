@@ -1,5 +1,5 @@
 set(CMAKE_CXX_STANDARD 11)
-
+set(CMAKE_EXPORT_COMPILE_COMMANDS yes)
 add_definitions(-DGTEST_LANGUAGE_CXX11)
 
 find_package(Threads REQUIRED)
