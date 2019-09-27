@@ -2,9 +2,9 @@
 #include <gmock/gmock.h>
 
 class CtorDtorMock {
-public:
-  CtorDtorMock() {}
-  ~CtorDtorMock() { dtor(); }
+  public:
+    CtorDtorMock() {}
+    ~CtorDtorMock() { dtor(); }
 
-  MOCK_METHOD0(dtor, void());
+    MOCK_METHOD0(dtor, void());
 };

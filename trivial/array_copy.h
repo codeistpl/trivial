@@ -21,11 +21,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 #pragma once
-namespace trivial{
-  template <typename T>
-  void copy_array( T* src, size_t src_size, T* dst, size_t dst_size){
-    for (int i = 0; i < dst_size; i++){
+namespace trivial {
+template <typename T>
+void copy_array(T *src, size_t src_size, T *dst, size_t dst_size) {
+    for (int i = 0; i < dst_size; i++) {
         dst[i] = src[i];
-      }
-  }
+    }
 }
+} // namespace trivial
