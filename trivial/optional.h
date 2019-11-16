@@ -59,7 +59,7 @@ template <typename T> class optional {
         return *this;
     }
 
-    T &operator*() & {
+    T &operator*() {
         if (!opt) {
             throw bad_optional_access();
         }
@@ -67,7 +67,7 @@ template <typename T> class optional {
         return mValue;
     }
 
-    const T &operator*() const & {
+    const T &operator*() const {
         if (!opt) {
             throw bad_optional_access();
         }

@@ -1,10 +1,9 @@
 #pragma once
-#include <gmock/gmock.h>
 
 class CtorDtorMock {
   public:
-    CtorDtorMock() {}
-    ~CtorDtorMock() { dtor(); }
+    CtorDtorMock() { dtor_triggered = false; }
+    ~CtorDtorMock() { dtor_triggered = true; }
 
-    MOCK_METHOD0(dtor, void());
+    static bool dtor_triggered;
 };

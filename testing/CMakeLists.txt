@@ -1,33 +1,15 @@
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 98)
 set(CMAKE_EXPORT_COMPILE_COMMANDS yes)
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Woverloaded-virtual -Wpedantic -Wconversion -Wmisleading-indentation -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wdouble-promotion -Wformat=2")
 
-add_definitions(-DGTEST_LANGUAGE_CXX11)
+find_package(PkgConfig REQUIRED)
+pkg_search_module(CPPUTEST REQUIRED cpputest>=3.8)
+message(STATUS "Found CppUTest version ${CPPUTEST_VERSION}")
 
+include_directories(${PROJECT_SOURCE_DIR})
 
-
-find_package(Threads REQUIRED)
-
-if ($ENV{GOOGLETEST_DIR})
-    SET(GOOGLETEST_DIR $ENV{GOOGLETEST_DIR})
-else ()
-    message(WARNING "Using googletest src dir specified at Qt Creator wizard")
-    SET(GOOGLETEST_DIR "/home/hihip/work/googletest")
-endif ()
-if (EXISTS ${GOOGLETEST_DIR})
-    SET(GTestSrc ${GOOGLETEST_DIR}/googletest)
-    SET(GMockSrc ${GOOGLETEST_DIR}/googlemock)
-else ()
-    message( FATAL_ERROR "No googletest src dir found - set GOOGLETEST_DIR to enable!")
-endif ()
-
-
-include_directories(${PROJECT_SOURCE_DIR} ${GTestSrc} ${GTestSrc}/include ${GMockSrc} ${GMockSrc}/include)
-
-add_executable(${PROJECT_NAME} main.cpp tst_array_copy.h tst_optional.h tst_shared_pointer.h singletonmock.h ctordtormock.h
-               ${GTestSrc}/src/gtest-all.cc
-               ${GMockSrc}/src/gmock-all.cc)
+add_executable(${PROJECT_NAME} main.cpp tst_array_copy.h tst_optional.h tst_shared_pointer.h singletonmock.h ctordtormock.h)
 
 add_test(${PROJECT_NAME} COMMAND ${PROJECT_NAME})
-target_link_libraries(${PROJECT_NAME} PRIVATE Threads::Threads)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${CPPUTEST_LDFLAGS})
 
