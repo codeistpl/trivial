@@ -1,5 +1,8 @@
-build/**
+build/**/*
+.build/**/*
+.cache/**/*
+.vscode/**/*
 *.orig
 *.user
 *.user.*
-
+compile_commands.json

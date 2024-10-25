@@ -1,6 +1,6 @@
 /*
 MIT License
-Copyright (c) [2018] [Michal Sopniewski]
+Copyright (c) [2024] [Michal Sopniewski]
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -38,14 +38,9 @@ template <typename T> class shared_ptr {
         (*mCounter)++;
     }
 
-    shared_ptr(const T &rhs) {
-        mPtr = new T(rhs);
-        mCounter = new long(1);
-    }
-
     shared_ptr(T *ptr) {
         mPtr = ptr;
-        mCounter = new long(1);
+        mCounter = new unsigned long(1);
     }
 
     ~shared_ptr() {
@@ -59,10 +54,14 @@ template <typename T> class shared_ptr {
     }
 
     void reset() {
-        if (mCounter != NULL) {
-            (*mCounter)--;
-            mCounter = NULL;
+        if (mCounter == NULL)
+            return;
+        (*mCounter)--;
+        if (*mCounter < 1) {
+            delete mCounter;
+            delete mPtr;
         }
+        mCounter = NULL;
         mPtr = NULL;
     }
 
@@ -73,7 +72,7 @@ template <typename T> class shared_ptr {
         }
 
         mPtr = rhs;
-        mCounter = new long(1);
+        mCounter = new unsigned long(1);
         return *this;
     }
 
@@ -81,7 +80,7 @@ template <typename T> class shared_ptr {
 
     T *operator->() { return mPtr; }
 
-    T *get() { return mPtr; }
+    T *get() const { return mPtr; }
 
     long use_count() const {
         if (mCounter == NULL)
@@ -89,11 +88,11 @@ template <typename T> class shared_ptr {
         return *mCounter;
     }
 
-    explicit operator bool() const { return mPtr != NULL; }
+    operator bool() const { return mPtr != NULL; }
 
     void swap(shared_ptr &rhs) {
         T *tmpPtr = rhs.mPtr;
-        long *tmpCounter = rhs.mCounter;
+        unsigned long *tmpCounter = rhs.mCounter;
         rhs.mPtr = mPtr;
         rhs.mCounter = mCounter;
         mCounter = tmpCounter;
@@ -102,7 +101,15 @@ template <typename T> class shared_ptr {
 
   private:
     T *mPtr;
-    long *mCounter;
+    unsigned long *mCounter;
 };
+
+template <typename T> shared_ptr<T> make_shared() {
+    return shared_ptr<T>(new T());
+}
+
+template <typename T> shared_ptr<T> make_shared(T *ptr) {
+    return shared_ptr<T>(ptr);
+}
 
 } // namespace trivial

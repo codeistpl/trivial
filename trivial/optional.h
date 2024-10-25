@@ -47,7 +47,7 @@ class bad_optional_access : public std::logic_error {
  */
 template <typename T> class optional {
   public:
-    optional(){};
+    optional() { opt = false; };
     optional(T v) {
         mValue = v;
         opt = true;
@@ -97,13 +97,13 @@ template <typename T> class optional {
 
     bool has_value() { return opt; }
 
-    explicit operator bool() const { return opt; }
+    operator bool() const { return opt; }
 
     void reset() { opt = false; }
 
   private:
     T mValue;
-    bool opt = false;
+    bool opt;
 };
 
 template <typename T>

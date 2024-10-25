@@ -1,5 +1,5 @@
-//#include "../trivial/array.h"
-//#include <gtest/gtest.h>
+// #include "../trivial/array.h"
+// #include <gtest/gtest.h>
 
 // using namespace testing;
 // using namespace trivial;

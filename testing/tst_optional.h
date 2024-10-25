@@ -118,7 +118,7 @@ TEST(optional, bad_access) {
 
     bool catches[3] = {false};
     try {
-        int x = opt.value();
+        opt.value();
     } catch (trivial::bad_optional_access &) {
         catches[0] = true;
     }
@@ -131,11 +131,12 @@ TEST(optional, bad_access) {
 
     try {
         *opt == 10;
+
     } catch (trivial::bad_optional_access &) {
         catches[2] = true;
     }
 
-    for (int i = 0; i < sizeof(catches); i++) {
+    for (int i = 0; static_cast<std::size_t>(i) < sizeof(catches); i++) {
         CHECK_TRUE(catches[i]);
     }
 }

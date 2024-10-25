@@ -2,6 +2,7 @@
 
 #include "ctordtormock.h"
 #include <CppUTest/TestHarness.h>
+#include <CppUTest/UtestMacros.h>
 #include <trivial/shared_ptr.h>
 
 TEST_GROUP(shared_ptr){};
@@ -9,14 +10,6 @@ TEST_GROUP(shared_ptr){};
 bool CtorDtorMock::dtor_triggered;
 
 using namespace trivial;
-
-TEST(shared_ptr, casts_to_true_is_have_managed_object) {
-    shared_ptr<int> sp(1);
-    CHECK_TRUE(bool(sp));
-    CHECK_TRUE(1 == sp.use_count());
-    CHECK_TRUE(1 == *sp.get());
-    CHECK_TRUE(1 == *sp);
-}
 
 TEST(shared_ptr, parameterless_ctor_makes_ptr_without_ownership) {
     shared_ptr<int> sp;
@@ -91,14 +84,14 @@ TEST(shared_ptr, on_reset_decrement_counter) {
     inst2.reset();
 
     CHECK_FALSE(bool(inst2));
-    CHECK_TRUE(0 == inst2.use_count());
-    CHECK_TRUE(1 == inst1.use_count());
+    CHECK_EQUAL(0, inst2.use_count());
+    CHECK_EQUAL(1, inst1.use_count());
     CHECK_FALSE(CtorDtorMock::dtor_triggered);
 }
 
 TEST(shared_ptr, swap_ptrs) {
-    shared_ptr<int> p1(99);
-    shared_ptr<int> p2(11);
+    shared_ptr<int> p1(new int(99));
+    shared_ptr<int> p2(new int(11));
     shared_ptr<int> p21(p2);
 
     CHECK_TRUE(1 == p1.use_count());
@@ -112,4 +105,11 @@ TEST(shared_ptr, swap_ptrs) {
     CHECK_TRUE(99 == *p2);
     CHECK_TRUE(2 == p1.use_count());
     CHECK_TRUE(11 == *p1);
+}
+
+TEST(shared_ptr, make_shared) {
+    shared_ptr<int> sp = make_shared<int>();
+    CHECK_TRUE(bool(sp));
+    CHECK_TRUE(1 == sp.use_count());
+    CHECK_TRUE(0 == *sp);
 }
